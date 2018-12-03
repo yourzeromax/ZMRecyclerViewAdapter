@@ -3,6 +3,7 @@ package com.yourzeromax.adapterlibrary;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 
 public abstract class ZMCommonAdapter<T> extends RecyclerView.Adapter<ZMCommonAdapter.CommonViewHolder> {
+    private static final String TAG = "ZMCommonAdapter";
     protected List<T> mDataList;
     LayoutInflater mInflater;
     private int mLayoutId;
@@ -94,9 +96,13 @@ public abstract class ZMCommonAdapter<T> extends RecyclerView.Adapter<ZMCommonAd
         this.mOnItemLongClickListener = listener;
     }
 
+    public static void testPrint() {
+        Log.d(TAG, "testPrint: " + "this is works!");
+    }
+
     public abstract void convert(CommonViewHolder viewHolder, T data);
 
-    class CommonViewHolder extends RecyclerView.ViewHolder {
+    public class CommonViewHolder extends RecyclerView.ViewHolder {
         private int mLayoutId;
         private View mItemView;
         private SparseArray<View> mViews;
