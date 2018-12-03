@@ -48,9 +48,9 @@ public abstract class ZMCommonAdapter<T> extends RecyclerView.Adapter<ZMCommonAd
         return vh;
     }
 
-    @Override
+
     public void onBindViewHolder(@NonNull CommonViewHolder commonViewHolder, int position) {
-        onBindViewHolder(commonViewHolder, mDataList.get(position));
+        convert(commonViewHolder, mDataList.get(position));
     }
 
     @Override
@@ -94,7 +94,7 @@ public abstract class ZMCommonAdapter<T> extends RecyclerView.Adapter<ZMCommonAd
         this.mOnItemLongClickListener = listener;
     }
 
-    public abstract void onBindViewHolder(CommonViewHolder viewHolder, T data);
+    public abstract void convert(CommonViewHolder viewHolder, T data);
 
     class CommonViewHolder extends RecyclerView.ViewHolder {
         private int mLayoutId;
