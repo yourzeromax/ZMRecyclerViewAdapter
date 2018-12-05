@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class ZMMultiAdapter<T> extends ZMCommonAdapter<T> {
 
 
-    public ZMMultiAdapter(Context context, List<T> dataList, int layoutId) {
+    public ZMMultiAdapter(Context context, List<T> dataList) {
         super(context, dataList, -1);
     }
 
@@ -35,5 +35,5 @@ public abstract class ZMMultiAdapter<T> extends ZMCommonAdapter<T> {
         return getLayoutId(position, mDataList.get(position));
     }
 
-   public abstract int getLayoutId(int position, T data);
+    public abstract int getLayoutId(int position, T data);
 }

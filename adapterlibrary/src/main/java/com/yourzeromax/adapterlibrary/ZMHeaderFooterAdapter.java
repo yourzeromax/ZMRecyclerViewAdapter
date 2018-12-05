@@ -1,7 +1,9 @@
 package com.yourzeromax.adapterlibrary;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +19,15 @@ import java.util.List;
  */
 
 public class ZMHeaderFooterAdapter<T> extends RecyclerView.Adapter<ZMCommonAdapter.CommonViewHolder> {
-    List<Integer> mFooterInfo;
-    List<Integer> mHeaderInfo;
-    SparseArray<View> mFooterViews;
-    SparseArray<View> mHeaderViews;
+
+    private List<Integer> mFooterInfo;
+    private List<Integer> mHeaderInfo;
+    private SparseArray<View> mFooterViews;
+    private SparseArray<View> mHeaderViews;
 
     private ZMCommonAdapter<T> mAdapter;
 
     public ZMHeaderFooterAdapter(ZMCommonAdapter<T> mAdapter) {
-        super();
         this.mAdapter = mAdapter;
     }
 
@@ -57,7 +59,7 @@ public class ZMHeaderFooterAdapter<T> extends RecyclerView.Adapter<ZMCommonAdapt
     public void onBindViewHolder(@NonNull ZMCommonAdapter.CommonViewHolder commonViewHolder, int i) {
         int index;
         if ((index = getIndexInInner(i)) != -1) {
-            mAdapter.onBindViewHolder(commonViewHolder, i);
+            mAdapter.onBindViewHolder(commonViewHolder, index);
         }
     }
 
@@ -66,6 +68,39 @@ public class ZMHeaderFooterAdapter<T> extends RecyclerView.Adapter<ZMCommonAdapt
         return mHeaderInfo.size() + mAdapter.getItemCount() + mFooterInfo.size();
     }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        mAdapter.onAttachedToRecyclerView(recyclerView);
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof GridLayoutManager) {
+            final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+            GridLayoutManager.SpanSizeLookup spanSizeLookup = new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    if (getIndexInInner(position) != -1) {
+                        return 1;
+                    } else {
+                        return gridLayoutManager.getSpanCount();
+                    }
+                }
+            };
+            gridLayoutManager.setSpanSizeLookup(spanSizeLookup);
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(ZMCommonAdapter.CommonViewHolder viewHolder) {
+        mAdapter.onViewAttachedToWindow(viewHolder);
+        int position = viewHolder.getLayoutPosition();
+        if (getIndexInHeader(position) != -1 || getIndexInFooter(position) != -1) {
+            ViewGroup.LayoutParams lp = viewHolder.itemView.getLayoutParams();
+            if (lp != null
+                    && lp instanceof StaggeredGridLayoutManager.LayoutParams) {
+                StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
+                p.setFullSpan(true);
+            }
+        }
+    }
 
     public int getIndexInHeader(int position) {
         if (position >= 0 && position < mFooterInfo.size()) {
@@ -86,6 +121,14 @@ public class ZMHeaderFooterAdapter<T> extends RecyclerView.Adapter<ZMCommonAdapt
             return position - mHeaderInfo.size();
         }
         return -1;
+    }
+
+    public int getHeaderViewsCount() {
+        return mHeaderInfo.size();
+    }
+
+    public int getFooterViewsCount() {
+        return mFooterInfo.size();
     }
 
     public void addHeaderView(int layoutId, View view) {
