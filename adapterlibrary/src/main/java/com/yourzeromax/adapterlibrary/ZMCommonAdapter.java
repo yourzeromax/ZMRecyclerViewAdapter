@@ -102,7 +102,7 @@ public abstract class ZMCommonAdapter<T> extends RecyclerView.Adapter<ZMCommonAd
 
     public abstract void convert(CommonViewHolder viewHolder, T data);
 
-    public class CommonViewHolder extends RecyclerView.ViewHolder {
+    public static class CommonViewHolder extends RecyclerView.ViewHolder {
         private int mLayoutId;
         private View mItemView;
         private SparseArray<View> mViews;
