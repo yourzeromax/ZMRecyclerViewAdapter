@@ -8,6 +8,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,10 +21,10 @@ import java.util.List;
 
 public class ZMHeaderFooterAdapter<T> extends RecyclerView.Adapter<ZMCommonAdapter.CommonViewHolder> {
 
-    private List<Integer> mFooterInfo;
-    private List<Integer> mHeaderInfo;
-    private SparseArray<View> mFooterViews;
-    private SparseArray<View> mHeaderViews;
+    private List<Integer> mFooterInfo = new ArrayList<>();
+    private List<Integer> mHeaderInfo = new ArrayList<>();
+    private SparseArray<View> mFooterViews = new SparseArray<>();
+    private SparseArray<View> mHeaderViews = new SparseArray<>();
 
     private ZMCommonAdapter<T> mAdapter;
 
@@ -47,9 +48,9 @@ public class ZMHeaderFooterAdapter<T> extends RecyclerView.Adapter<ZMCommonAdapt
     @NonNull
     @Override
     public ZMCommonAdapter.CommonViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        if (mFooterViews.get(viewType) != null) {
-            return new ZMCommonAdapter.CommonViewHolder(viewType, mFooterViews.get(viewType));
-        } else if (mHeaderViews.get(viewType) != null) {
+        if (mHeaderViews.get(viewType) != null) {
+            return new ZMCommonAdapter.CommonViewHolder(viewType, mHeaderViews.get(viewType));
+        } else if (mFooterViews.get(viewType) != null) {
             return new ZMCommonAdapter.CommonViewHolder(viewType, mFooterViews.get(viewType));
         }
         return mAdapter.onCreateViewHolder(viewGroup, viewType);
@@ -65,7 +66,7 @@ public class ZMHeaderFooterAdapter<T> extends RecyclerView.Adapter<ZMCommonAdapt
 
     @Override
     public int getItemCount() {
-        return mHeaderInfo.size() + mAdapter.getItemCount() + mFooterInfo.size();
+        return mHeaderViews.size() + mAdapter.getItemCount() + mFooterViews.size();
     }
 
     @Override
@@ -103,21 +104,21 @@ public class ZMHeaderFooterAdapter<T> extends RecyclerView.Adapter<ZMCommonAdapt
     }
 
     public int getIndexInHeader(int position) {
-        if (position >= 0 && position < mFooterInfo.size()) {
+        if (position >= 0 && position < mHeaderInfo.size()) {
             return position;
         }
         return -1;
     }
 
     public int getIndexInFooter(int position) {
-        if (position >= mHeaderInfo.size() + mAdapter.getItemCount() && position < getItemCount()) {
-            return position - mHeaderInfo.size() - mAdapter.getItemCount();
+        if (mFooterViews.size() > 0 && position - mHeaderViews.size() - mAdapter.getItemCount() >= 0) {
+            return position - mHeaderViews.size() - mAdapter.getItemCount();
         }
         return -1;
     }
 
     public int getIndexInInner(int position) {
-        if (getIndexInFooter(position) != -1 && getIndexInHeader(position) != -1) {
+        if (getIndexInFooter(position) == -1 && getIndexInHeader(position) == -1) {
             return position - mHeaderInfo.size();
         }
         return -1;
