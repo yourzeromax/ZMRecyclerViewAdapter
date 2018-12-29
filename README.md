@@ -18,7 +18,7 @@
 	}
 
 	dependencies {
-	        implementation 'com.github.yourzeromax:ZMRecyclerViewAdapter:v1.4.0'
+	        implementation 'com.github.yourzeromax:ZMRecyclerViewAdapter:v1.1.1'
 	        implementation  'com.android.support:recyclerview-v7:28.0.0'
 	        }
 ```
